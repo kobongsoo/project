@@ -1,0 +1,12 @@
+# jupyter lab compose
+
+version: '1.0'
+
+services:
+  rag:
+    image: bong9431/langchain:1.0
+    ports: 
+      - 8888:8888
+      - 9431:9431
+    volumes:
+      - ./jupyterdir:/jupyterdir
