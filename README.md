@@ -11,7 +11,7 @@
 2. RAG\jupyterdir\.env에 key들 입력
 3. docker [bong9431/langchain:1.0](https://hub.docker.com/repository/docker/bong9431/langchain/general) 로 구동
 ```
-docker compose -p m -f ./compose.yaml up -d
+docker compose -f ./compose.yaml up -d
 ```
 4. sh rag.sh start 실행
 ```
