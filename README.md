@@ -15,7 +15,7 @@ docker compose -f ./compose.yaml up -d
 ```
 4. sh rag.sh start 실행
 ```
-docker exec -it m-rag-1 /bin/bash
+docker exec -it rag-1 /bin/bash
 root@93dad73d3406:/#
 root@93dad73d3406:/# cd jupyterdir
 root@93dad73d3406:/jupyterdir#
