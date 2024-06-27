@@ -8,7 +8,7 @@
 
 ### 구동
 1. RAG\jupyterdir\data\settings.yaml 파일 수정
-2. RAG\jupyterdir\.env에 key들 입력
+2. RAG\jupyterdir\\.env 파일에 key들 입력
 3. docker [bong9431/langchain:1.0](https://hub.docker.com/repository/docker/bong9431/langchain/general) 로 구동
 ```
 docker compose -f ./compose.yaml up -d
