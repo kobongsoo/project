@@ -210,6 +210,7 @@ async def search01(request:Request, user_id:str, query:str):
     
     # RRF_docs 있으면 context를 문서제목+문서text 식으로 만듬
     count:int = 0
+    idx:int = 0
     if len(RRF_docs) > 0:
         for idx, RRF_doc in enumerate(RRF_docs):
             count = idx+1
@@ -222,6 +223,7 @@ async def search01(request:Request, user_id:str, query:str):
             doc_names += embed_doc['rfile_name'] + '<br>'
             context += embed_doc['rfile_text'] + '\n\n'
             context_score += f"{count}. (sore:{embed_doc['score']:.3f}){embed_doc['rfile_name']}<br><br>{embed_doc['rfile_text']}<br><br>"
+            idx = idx+1
             
     myutils.log_message(f'========================================')
     myutils.log_message(f'\n[info][/search] *RRF_docs Len:{len(RRF_docs)}\n*BM24_doc Len:{len(bm25_docs)}\n*embed_docs Len:{len(embed_docs)}\n*doc_name:\n{doc_names}\n*context_score:\n{context_score}\n')
@@ -237,6 +239,9 @@ async def search01(request:Request, user_id:str, query:str):
     response, status = generate_text_GPT2(gpt_model=gpt_model, prompt=prompt, system_prompt=system_prompt, 
                                           assistants=[], stream=stream, timeout=20,
                                           max_tokens=max_tokens, temperature=temperature, top_p=top_p) 
+    
+    myutils.log_message(f'\n[info][/search] *generate_text_GPT2=>status:{status}\nresponse:\n{response}\n')
+    myutils.log_message(f'========================================')
     
     # 5. 결과 출력 (응답결과, context+score, status 에러값, 문서명들)
     return response, context_score, status, doc_names
