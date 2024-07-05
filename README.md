@@ -1,3 +1,7 @@
+## 2번째 프로젝트
+## vision 모델
+[source] **vision 폴더**
+- paligemma-3b-mix-448
 ## 1번째 프로젝트
 ## RAG 웹 프로젝트
 [source] **RAG 폴더**
