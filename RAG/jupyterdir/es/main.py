@@ -188,7 +188,40 @@ class My_ElasticSearch:
                 docs.append(doc)
 
         return docs
+    
+    ############################################################
+    ## 임베딩 검색
+    # => script_query: 쿼리스크립트, k=검색계수 
+    ############################################################
+    def search_docs(self, script_query:str, k:int=5, min_score:float=0.0, user_id:str=None):
+        assert script_query, f'script_query is empty'
+        
+        body = {
+            "size": k,
+            "query": script_query,
+            "_source":{"includes": ["rfile_name", "rfile_text"]}
+        }
+        
+        print(f'*body:\n{body}\n')
+        
+         # es로 쿼리 날림.
+        response = None
+        response = self.es.search(index=self.index_name, body=body)
+        
+        docs:list = []
+        for hit in response["hits"]["hits"]: 
+            doc = {}  #dict 선언
+            score = hit["_score"]
+            print(f'*[search_docs] score:{score}\nrfile_name:{hit["_source"]["rfile_name"]}\n')
+            
+            # score가 min_score이상인 경우에만 추가 
+            if score > min_score: 
+                doc['rfile_name'] = hit["_source"]["rfile_name"]      # contextid 담음
+                #doc['rfile_text'] = hit["_source"]["rfile_text"]      # text 담음.
+                doc['score'] = score
+                docs.append(doc)
 
+        return docs
     
     ############################################################
     ## 임베딩 검색

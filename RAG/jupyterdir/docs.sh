@@ -1,11 +1,11 @@
 #!/bin/bash
 
-APP_NAME=rag:app
+APP_NAME=docs:app
 
 start() {
   echo "Starting $APP_NAME"
   mkdir -p "./log"
-  nohup uvicorn $APP_NAME --host=0.0.0.0 --port=9001 --limit-concurrency=200 > ./log/server.log 2>&1 &
+  nohup uvicorn $APP_NAME --host=0.0.0.0 --port=9002 --limit-concurrency=200 > ./log/server.log 2>&1 &
   echo "$APP_NAME started"
 }
 

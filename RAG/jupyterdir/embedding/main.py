@@ -10,7 +10,7 @@ from langchain_community.embeddings import (
 )
 
 ##langchain ######################
-from langchain.document_loaders import PyPDFLoader
+from langchain.document_loaders import TextLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 ##################################
 
@@ -19,7 +19,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 def embedding_pdf(huggingfaceembeddings,     # HuggingFaceEmbedding 임베딩 모델 인스턴스     
                   file_path:str,             # 임베딩할 파일 경로
                   chunk_size:int=500,        # chunk 사이즈
-                  chunk_overlap:int=0        # chunk 오버랩
+                  chunk_overlap:int=0,       # chunk 오버랩
+                  upload_file_type:int=0     # 업로드할 파일 타입(0=pdf 파일, 1=모든파일)
                  ):
 
     assert huggingfaceembeddings, f"[embedding_pdf] huggingfaceembeddings is empty!"
@@ -27,8 +28,12 @@ def embedding_pdf(huggingfaceembeddings,     # HuggingFaceEmbedding 임베딩 �
     assert chunk_size > 1, f"[embedding_pdf] chunk_size < 1!"   
     assert chunk_overlap > -1, f"[embedding_pdf] chunk_overlap < 0!"   
     
-     # => pdf 로딩 후 RecursiveSplitter로 분할함.
-    loader = PyPDFLoader(file_path=file_path)
+    if upload_file_type == 0: 
+        # => pdf 로딩 후 RecursiveSplitter로 분할함.
+        loader = PyPDFLoader(file_path=file_path)
+    else:
+        loader = TextLoader(file_path=file_path) # text 파일을 로딩함.
+        
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
     split_docs = loader.load_and_split(text_splitter=text_splitter)
 

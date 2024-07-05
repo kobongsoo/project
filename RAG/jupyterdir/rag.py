@@ -18,7 +18,7 @@ from enum import Enum
 from typing import Union
 from pydantic import BaseModel
 from fastapi import FastAPI, File, UploadFile, Query, Cookie, Form, Request, HTTPException, BackgroundTasks
-from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from PyPDF2 import PdfReader
 from utils import MyUtils, weighted_reciprocal_rank_fusion, generate_text_GPT2
@@ -30,6 +30,14 @@ from langchain_community.embeddings import (
 
 from embedding import embedding_pdf
 
+#-----------------------------------------------
+# Mpower Synap 추가
+from os import sys
+sys.path.append('../../MpowerAI')
+from pympower.classes.mshaai import MShaAI
+
+shaai = MShaAI()
+#-----------------------------------------------
 
 # settings.yaml 설정값 불러옴.
 myutils = MyUtils(yam_file_path='./data/settings.yaml')
@@ -96,6 +104,19 @@ def output_pdf_text(file_path:str):
 async def root(): # 경로 동작 함수 작성
 	return {"msg": "RAG 개인문서검색 예제 World"}
 
+#---------------------------------------------------------------
+# == 업로드 text ==
+@app.post("/upload01")
+async def upload_file(file: UploadFile = File(...)):
+    file_location = f"./files/{file.filename}"
+    myutils.log_message(f'[info][/upload01] *file_location:{file_location}')
+    
+    with open(file_location, "wb") as f:
+        content = await file.read()
+        f.write(content)
+        
+    response = {"file": f"{file_location}"}
+    return JSONResponse(content=response)
 #---------------------------------------------------------------
 # index 목록 불러오기 
 @app.get("/list")
@@ -267,24 +288,28 @@ async def upload(request: Request, file: UploadFile = File(...)):
     chunk_overlap = settings['CHUNK_OVERLAP']
     index_name = settings['ES_INDEX_NAME']
     es_batch_size = settings['ES_BATCH_SIZE']
+    upload_file_type = settings['UPLOAD_FILE_TYPE']
     
-    myutils.log_message(f'[info][/upload] *user_id:{user_id}, chunk_zie:{chunk_size}, chunk_overlap:{chunk_overlap}')
+    myutils.log_message(f'[info][/upload] *user_id:{user_id}, upload_file_type:{upload_file_type}, chunk_zie:{chunk_size}, chunk_overlap:{chunk_overlap}')
     
-    # MIME 타입 확인
-    if file.content_type != "application/pdf":
-        return HTMLResponse(content=f"""
-        <html>
-            <head>
-                <title>Error</title>
-            </head>
-            <body>
-                <h1>Upload PDF</h1>
-                <p style="color:red;">PDF 파일이 아닙니다.</p>
-                <a href="/upload/file?user_id={user_id}">Go back</a>
-            </body>
-        </html>
-        """, status_code=400)
+    # [2024-06-27] upload_file_type == 0 설정된 경우에만 MIME 타입 얻어와서 pdf 파일인지 확인함
+    if upload_file_type == 0:
+        # MIME 타입 확인
+        if file.content_type != "application/pdf":
+            return HTMLResponse(content=f"""
+            <html>
+                <head>
+                    <title>Error</title>
+                </head>
+                <body>
+                    <h1>Upload PDF</h1>
+                    <p style="color:red;">PDF 파일이 아닙니다.</p>
+                    <a href="/upload/file?user_id={user_id}">Go back</a>
+                </body>
+            </html>
+            """, status_code=400)
 
+    #=== 파일 저장 --START-- ===========================================#
     # 입력 buffer에서 읽어 올때 
     #content = await file.read()
     #pdf_reader = PdfReader(io.BytesIO(content))
@@ -314,13 +339,21 @@ async def upload(request: Request, file: UploadFile = File(...)):
     with open(save_path, "wb") as buffer:
         buffer.write(await file.read())
 
+    #=== 파일 저장 --End-- ===========================================#
+    
+    #=== Text 검출 --START-- =========================================#
+    
+    shaai.extract(srcPath=srcPath, tgtPath=tgtPath)
+    #=== Text 검출 --End-- ===========================================#
+    
     try:
         # 2. 임베딩 
         # => langchain 이용. splitter 후 임베딩 함
         docs_vectors, docs = embedding_pdf(huggingfaceembeddings=embedding,
                       file_path=save_path, 
                       chunk_size=chunk_size, 
-                      chunk_overlap=chunk_overlap)
+                      chunk_overlap=chunk_overlap,
+                      upload_file_type=upload_file_type)
     
         myutils.log_message(f'[info][/upload] *docs 벡터 수:{len(docs_vectors)}')
     except Exception as e:
