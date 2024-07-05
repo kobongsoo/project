@@ -1,10 +1,34 @@
-## 2번째 프로젝트
-## vision 모델
+## 3번째 프로젝트 - docs 프로젝트
+[source] **RAG 폴더**
+- 문서임베딩 하고 문서 검색 하는 프로젝트.
+- vision 모델로 이미지도 임베딩할수 있음.
+### 구동
+1. RAG\jupyterdir\data\docs_settings.yaml 파일 수정
+2. docker [bong9431/langchain:1.0](https://hub.docker.com/repository/docker/bong9431/langchain/general) 로 구동
+```
+docker compose -f ./compose.yaml up -d
+```
+3. sh docs.sh start 실행
+```
+docker exec -it rag-1 /bin/bash
+root@93dad73d3406:/#
+root@93dad73d3406:/# cd jupyterdir
+root@93dad73d3406:/jupyterdir#
+sh docs.sh start
+Starting docs:app
+docs:app started
+root@93dad73d3406:/jupyterdir#
+```
+4. 접속 : 9002 포트로 접속
+```
+{ip}:9002/docs
+```
+
+## 2번째 프로젝트 - vision 모델
 [source] **vision 폴더**
 - paligemma-3b-mix-448, Phi-3-vision-128k-instruct vision 모델을 로딩하는 예제
   
-## 1번째 프로젝트
-## RAG 웹 프로젝트
+## 1번째 프로젝트 - RAG 웹 프로젝트
 [source] **RAG 폴더**
 - 개인문서파일(*.pdf)를 웹을 통해 업로드 하고, RAG 방식으로 검색 하는 프로젝트
 - ElasticSearch 벡터db 사용.
