@@ -1,7 +1,8 @@
 ## 2번째 프로젝트
 ## vision 모델
 [source] **vision 폴더**
-- paligemma-3b-mix-448
+- paligemma-3b-mix-448, Phi-3-vision-128k-instruct vision 모델을 로딩하는 예제
+  
 ## 1번째 프로젝트
 ## RAG 웹 프로젝트
 [source] **RAG 폴더**
