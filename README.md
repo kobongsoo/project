@@ -1,18 +1,13 @@
 ## 3번째 프로젝트 - docs 프로젝트
-[source] **RAG 폴더**
+[source] **docs 폴더**
 - 문서임베딩 하고 문서 검색 하는 프로젝트.
-- vision 모델로 이미지도 임베딩할수 있음.
+- vision 모델로 이미지도 임베딩할 수 있음.
 - 문서 text 검출은 **문서필터** 이용 했음 -> **반드시 MpowerAI 검출필터가 설치된 서버(10.X.X.X )에서 구동**해야 함.
 ### 구동
-1. RAG\jupyterdir\data\docs_settings.yaml 파일 수정
-2. docker [bong9431/langchain:1.0](https://hub.docker.com/repository/docker/bong9431/langchain/general) 로 구동
-```
-docker compose -f ./compose.yaml up -d
-```
+1. 10.x.x.x 서버 접속
+2. docs 폴더 복사
 3. sh docs.sh start 실행
 ```
-docker exec -it rag-1 /bin/bash
-root@93dad73d3406:/#
 root@93dad73d3406:/# cd jupyterdir
 root@93dad73d3406:/jupyterdir#
 sh docs.sh start
@@ -24,6 +19,10 @@ root@93dad73d3406:/jupyterdir#
 ```
 {ip}:9002/docs
 ```
+
+![image](https://github.com/user-attachments/assets/df4af48f-b2e2-414e-b380-909323b66572)
+
+
 
 ## 2번째 프로젝트 - vision 모델
 [source] **vision 폴더**
