@@ -16,7 +16,8 @@ def search_docs01(instance:dict, file_path:str):
     myutils = instance['myutils']
     myes = instance['myes']
     embedding = instance['embedding']
-    
+    model_shape = instance['model_shape']
+        
     start_time = time.time()
     upload_file_type = 1
     
@@ -39,6 +40,7 @@ def search_docs01(instance:dict, file_path:str):
     uid_embed_weigth = settings['RRF_BM25_WEIGTH']
     uid_bm25_weigth = settings['RRF_EMBED_WEIGTH']
     
+
     # ==== 임베딩 ==================
     try:
                
@@ -50,6 +52,12 @@ def search_docs01(instance:dict, file_path:str):
                               upload_file_type=upload_file_type)
       
         docs_vectors_array = np.array(docs_vectors) # docks_vectors는 list이므로 array로 변경해 줌
+        
+        # docs_vectors_array 가 없으면 response에는 빈 리스트로 리턴.
+        if len(docs_vectors_array) < 1:
+            response = {"error":2000, "response": f"[]", "time": "0"}
+            myutils.log_message(f'[info][/search01] {response}')
+            return response
     
     except Exception as e:
         msg = f'*embedding_pdf is Fail!!..(error: {e})'
@@ -58,8 +66,8 @@ def search_docs01(instance:dict, file_path:str):
         return response
     # ==============================
     
-    # ==== 클러스터링 처리 =========
-    if SEARCH_EMBED_TYPE == 0:
+    # ==ES 쿼리스크립트 만듬 ========
+    if SEARCH_EMBED_TYPE == 0: # 다대다 쿼리(*쿼리 문서를 클러스터링해서 여러개 벡터 만들고 임베딩된문서의 다수 벡터와 비교)
         try:
 
             emb = clustering_embedding(embeddings=docs_vectors_array, 
@@ -78,9 +86,13 @@ def search_docs01(instance:dict, file_path:str):
             response = {"error":1002, "response": f"{msg}", "time": "0"}
             return response
     # ==============================
-    else: # 평균 쿼리 만듬.
-        avg_emb = docs_vectors_array.mean(axis=0).reshape(1,-1) # 평균을 구함 : (128,) 배열을 (1,128) 형태로 만들기 위해 reshape 해줌
+    elif SEARCH_EMBED_TYPE == 1: # 평균 쿼리 만듬.(*쿼리 문서의 평균을 구해서 임베딩된문서의 평균벡터와 비교)
+        avg_emb = docs_vectors_array.mean(axis=0).reshape(1,-1) # 평균을 구함 : (128,) 배열을 (1,128) 형태로 만들기 위해 reshape 해줌          
         script_query = make_embedding_query_script(qr_vector = avg_emb[0]) # 쿼리를 만듬.   
+    # ==============================
+    else: # 1대다 쿼리 만듬.(*쿼리 문서의 평균을 구해서 임베딩된문서의 다수 벡터와 비교)
+        avg_emb = docs_vectors_array.mean(axis=0).reshape(1,-1) # 평균을 구함 : (128,) 배열을 (1,128) 형태로 만들기 위해 reshape 해줌          
+        script_query = make_max_query_script(query_vector=avg_emb[0], vectornum=NUM_CLUSTERS, uid_list=[]) # 쿼리를 만듬.   
     # ==============================
     
     # ==== ES로 쿼리 ===============

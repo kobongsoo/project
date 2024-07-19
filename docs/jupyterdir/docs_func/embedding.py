@@ -3,11 +3,12 @@ import time
 import numpy as np
 import sys
 import json
+from tqdm import tqdm 
 
 sys.path.append('..')
 from embedding import embedding_pdf
-from utils import weighted_reciprocal_rank_fusion, clustering_embedding
-
+from utils import weighted_reciprocal_rank_fusion, clustering_embedding  
+    
 #------------------------------------------------------------------
 # == file 1개 임베딩 ============
 def embedding_file_doc01(instance:dict, file_path:str):
@@ -120,7 +121,7 @@ def embedding_folder_doc01(instance:dict, file_folder:str, del_index:bool=False)
     count:int = 0
     
     file_paths = myutils.getListOfFiles(file_folder) # 폴더에 파일 path 얻어옴.
-    for idx, file_path in enumerate(file_paths):
+    for idx, file_path in enumerate(tqdm(file_paths)):
         if '.ipynb_checkpoints' not in file_path:
             # ./files/out 폴더에 추출한 text 파일들을 불러와서 임베딩 벡터 생성함.
             # 파일별 임베딩 함
@@ -130,7 +131,7 @@ def embedding_folder_doc01(instance:dict, file_folder:str, del_index:bool=False)
                     count += 1
                     if len(doc) > 0:
                         esdocs.append(doc)
-                        
+                 
                 # batch_size 만큼씩 한꺼번에 es로 insert 시킴.
                 if count % es_batch_size == 0:
                     num += 1

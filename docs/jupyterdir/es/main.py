@@ -7,6 +7,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from typing import Dict, List, Optional
 from .es_query import make_bm25_query_script, make_embedding_query_script, make_list_query_script, make_del_query_script
+#import logging
 
 class My_ElasticSearch:
 
@@ -23,6 +24,7 @@ class My_ElasticSearch:
         
         try:
             # 1.elasticsearch 접속
+            #logging.getLogger('elasticsearch').setLevel(logging.ERROR)  # ERROR 레벨 이상만 로깅
             self.es = Elasticsearch(self.es_url) 
         except Exception as e:
             msg = f'Elasticsearch:{self.es_url}=>{e}'
@@ -168,7 +170,7 @@ class My_ElasticSearch:
             "query": script_query,
             "_source":{"includes": ["user_id", "rfile_name", "rfile_text"]}
         }
-        print(f'*body:\n{body}\n')
+        #print(f'*body:\n{body}\n')
         
         response = None
         response = self.es.search(index=self.index_name, body=body)
@@ -177,7 +179,7 @@ class My_ElasticSearch:
         for hit in response["hits"]["hits"]: 
             doc = {}  #dict 선언
             score = hit["_score"]
-            print(f'*[BM25_search] score:{score}\nrfile_text:{hit["_source"]["rfile_text"]}\n')
+            print(f'*[BM25_search] score:{score}\rfile_name:{hit["_source"]["rfile_name"]}\n')
             
             # score가 min_score이상인 경우에만 추가 
             if score > min_score: 
@@ -209,16 +211,17 @@ class My_ElasticSearch:
             "query": script_query,
             "_source":{"includes": ["rfile_name", "rfile_text"]}
         }
-        print(f'*body:\n{body}\n')
+        #print(f'*body:\n{body}\n')
         
         response = None
         response = self.es.search(index=self.index_name, body=body)
-
+        #print(f'*[BM25_search_docs] response: {response}')
         docs:list = []
         for hit in response["hits"]["hits"]: 
             doc = {}  #dict 선언
             score = hit["_score"]
-            print(f'*[BM25_search_docs] score:{score}\nrfile_text:{hit["_source"]["rfile_text"]}\n')
+            hit["_source"]["rfile_name"]
+            #print(f'*[BM25_search_docs] score:{score}\nrfile_name:{hit["_source"]["rfile_name"]}\n')
             
             # score가 min_score이상인 경우에만 추가 
             if score > min_score: 
@@ -242,7 +245,7 @@ class My_ElasticSearch:
             "_source":{"includes": ["rfile_name", "rfile_text"]}
         }
         
-        print(f'*body:\n{body}\n')
+        #print(f'*body:\n{body}\n')
         
          # es로 쿼리 날림.
         response = None
@@ -252,13 +255,14 @@ class My_ElasticSearch:
         for hit in response["hits"]["hits"]: 
             doc = {}  #dict 선언
             score = hit["_score"]
-            print(f'*[search_docs] score:{score}\nrfile_name:{hit["_source"]["rfile_name"]}\n')
+            #print(f'*[search_docs] score:{score}\nrfile_name:{hit["_source"]["rfile_name"]}\n')
             
             # score가 min_score이상인 경우에만 추가 
             if score > min_score: 
                 doc['rfile_name'] = hit["_source"]["rfile_name"]      # contextid 담음
                 #doc['rfile_text'] = hit["_source"]["rfile_text"]      # text 담음.
                 doc['score'] = score
+                #print(f'*[search_docs] doc:{doc}\n')
                 docs.append(doc)
 
         return docs

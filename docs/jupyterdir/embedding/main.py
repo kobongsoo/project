@@ -66,9 +66,9 @@ def embedding_pdf(huggingfaceembeddings,     # HuggingFaceEmbedding 임베딩 �
     # *임베딩 모델 설정 
     # => 여기서 다시 임베딩 모델 호출하면 오래걸림. 따라서 메인에서 1번만 로딩하고, 메인에서 로딩한 모델 인스턴스 재사용함. 
     embedding = huggingfaceembeddings
-    print(f'*[embedding_pdf] 임베딩 모델: {embedding.model_name}')
+    #print(f'*[embedding_pdf] 임베딩 모델: {embedding.model_name}')
 
     # 임베딩 실행
     docs_vectors = embedding.embed_documents(docs)
-    
     return docs_vectors, docs
+    
