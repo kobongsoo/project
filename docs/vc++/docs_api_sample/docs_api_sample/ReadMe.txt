@@ -1,20 +1,20 @@
 ================================================================================
-    MFC 라이브러리 : test 프로젝트 개요
+    MFC 라이브러리 : docs_api_sample 프로젝트 개요
 ================================================================================
 
-응용 프로그램 마법사에서 이 test 응용 프로그램을 
+응용 프로그램 마법사에서 이 docs_api_sample 응용 프로그램을 
 만들었습니다. 이 응용 프로그램은 MFC의 기본 사용법을 보여 줄 뿐만 아니라 응용 
 프로그램작성을 위한 기본 구조를 제공합니다.
 
-이 파일에는 test 응용 프로그램을 구성하는 각 파일에 대한
+이 파일에는 docs_api_sample 응용 프로그램을 구성하는 각 파일에 대한
 요약 설명이 포함되어 있습니다.
 
-test.vcxproj
+docs_api_sample.vcxproj
     응용 프로그램 마법사를 사용하여 생성된 VC++ 프로젝트의 주 프로젝트 파일입니다. 
     파일을 생성한 Visual C++ 버전에 대한 정보와 응용 프로그램 마법사를 사용하여 선택한 
     플랫폼, 구성 및 프로젝트 기능에 대한 정보가 들어 있습니다.
 
-test.vcxproj.filters
+docs_api_sample.vcxproj.filters
     응용 프로그램 마법사를 사용하여 생성된 VC++ 프로젝트의 필터 파일입니다. 
     이 파일에는 프로젝트의 파일과 필터 간의 연결 정보가 들어 있습니다. 이러한 
     연결은 특정 노드에서 유사한 확장명으로 그룹화된 파일을 표시하기 위해 
@@ -22,26 +22,26 @@ test.vcxproj.filters
     있습니다.
 
 
-test.h
+docs_api_sample.h
     응용 프로그램의 기본 헤더 파일입니다. 여기에는 다른 프로젝트 관련
-    헤더(Resource.h 포함)가 들어 있고 CtestApp 응용 프로그램
+    헤더(Resource.h 포함)가 들어 있고 Cdocs_api_sampleApp 응용 프로그램
     클래스를 선언합니다.
 
-test.cpp
-    응용 프로그램 클래스 CtestApp이(가) 들어 있는 기본 응용 프로그램
+docs_api_sample.cpp
+    응용 프로그램 클래스 Cdocs_api_sampleApp이(가) 들어 있는 기본 응용 프로그램
     소스 파일입니다.
 
-test.rc
+docs_api_sample.rc
     프로그램에서 사용하는 모든 Microsoft Windows 리소스의 목록입니다.
  여기에는 RES 하위 디렉터리에 저장된 아이콘, 비트맵 및 커서가
     포함됩니다. 이 파일은 Microsoft Visual C++에서 직접
     편집할 수 있습니다. 프로젝트 리소스는 1042에 있습니다.
 
-res\test.ico
+res\docs_api_sample.ico
     응용 프로그램의 아이콘으로 사용되는 아이콘 파일입니다. 이 아이콘은
-    주 리소스 파일인 test.rc에 의해 포함됩니다.
+    주 리소스 파일인 docs_api_sample.rc에 의해 포함됩니다.
 
-res\test.rc2
+res\docs_api_sample.rc2
     이 파일에는 Microsoft Visual C++ 이외의 다른 도구에서 편집한 리소스가 
     들어 있습니다. 리소스 편집기로 편집할 수 없는 모든 리소스는
     이 파일에 넣어야 합니다.
@@ -51,10 +51,10 @@ res\test.rc2
 
 응용 프로그램 마법사에서 하나의 대화 상자 클래스가 만들어집니다.
 
-testDlg.h, testDlg.cpp - 대화 상자
-    이 파일에는 CtestDlg 클래스가 들어 있습니다. 이 클래스는
+docs_api_sampleDlg.h, docs_api_sampleDlg.cpp - 대화 상자
+    이 파일에는 Cdocs_api_sampleDlg 클래스가 들어 있습니다. 이 클래스는
     응용 프로그램의 주 대화 상자 동작을 정의합니다. 대화 상자의 템플릿은
-    Microsoft Visual C++에서 편집할 수 있는 test.rc에 있습니다.
+    Microsoft Visual C++에서 편집할 수 있는 docs_api_sample.rc에 있습니다.
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -73,14 +73,14 @@ ActiveX 컨트롤
 기타 표준 파일:
 
 StdAfx.h, StdAfx.cpp
-    이 파일은 미리 컴파일된 헤더 파일(PCH)인 test.pch와
+    이 파일은 미리 컴파일된 헤더 파일(PCH)인 docs_api_sample.pch와
     미리 컴파일된 형식 파일인 StdAfx.obj를 빌드하는 데 사용됩니다.
 
 Resource.h
     새 리소스 ID를 정의하는 표준 헤더 파일입니다.
     Microsoft Visual C++에서 이 파일을 읽고 업데이트합니다.
 
-test.manifest
+docs_api_sample.manifest
 	응용 프로그램 매니페스트 파일은 Windows XP에서 특정 버전의 Side-by-Side 
 	어셈블리에 대한 응용 프로그램 종속성을 설명하는 데 사용됩니다. 로더는 이 정보를 
 	사용하여 어셈블리 캐시에서 적절한 어셈블리를 로드하거나 응용 프로그램에서 전용 

@@ -6,7 +6,7 @@ import numpy as np
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from typing import Dict, List, Optional
-from .es_query import make_bm25_query_script, make_embedding_query_script, make_list_query_script, make_del_query_script
+from .es_query import make_bm25_query_script, make_embedding_query_script, make_list_query_script, make_del_query_script, make_rfile_name_query_script
 #import logging
 
 class My_ElasticSearch:
@@ -232,6 +232,46 @@ class My_ElasticSearch:
 
         return docs
     
+    ############################################################
+    ## 임베딩된 인덱스 rfile_name 로 검색
+    # => script_query: 쿼리스크립트
+    ############################################################
+    def search_rfile_name_docs(self, rfile_name:str):
+        assert rfile_name, f'rfile_name is empty'
+        
+        script_query = make_rfile_name_query_script(query=rfile_name)
+        
+        body = {
+            "query": script_query,
+            "_source":{"includes": ["rfile_name", "rfile_text", "vector0"]}
+        }
+        
+        #print(f'*body:\n{body}\n')
+        
+        # es로 쿼리 날림.
+        response = None
+        response = self.es.search(index=self.index_name, body=body)
+        
+        docs:list = []
+        for hit in response["hits"]["hits"]: 
+            doc = {}  #dict 선언
+            doc['rfile_name'] = hit["_source"]["rfile_name"]      # contextid 담음
+            
+            # rfile_text는 너무길수 있으므로 1024까지만 출력함
+            rfile_text = hit["_source"]["rfile_text"] 
+            if len(rfile_text) > 1024:
+                rfile_text = rfile_text[:1024]
+                
+            doc['rfile_text'] = rfile_text
+           
+            vector0 = hit["_source"]["vector0"]
+            #print(f'vector0: {type(vector0)}')
+            # 리스트를 numpy 배열로 변환
+            # vector0_array = np.array(vector0)
+            doc['vector0'] = str(vector0) # str형으로 전달
+            docs.append(doc)
+
+        return docs
     ############################################################
     ## 임베딩 검색
     # => script_query: 쿼리스크립트, k=검색계수 

@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{257D284F-D520-4E82-8DAC-40ECE9CD9DD4}</ProjectGuid>
-    <RootNamespace>test</RootNamespace>
+    <ProjectGuid>{20257A88-4A6B-4FB9-8118-AFD1026FC046}</ProjectGuid>
+    <RootNamespace>docs_api_sample</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -51,7 +51,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -96,42 +95,38 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="res\test.ico" />
-    <None Include="res\test.rc2" />
+    <None Include="res\docs_api_sample.ico" />
+    <None Include="res\docs_api_sample.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="docs_api_sample.h" />
+    <ClInclude Include="docs_api_sampleDlg.h" />
+    <ClInclude Include="Global.h" />
+    <ClInclude Include="Log.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="test.h" />
-    <ClInclude Include="testDlg.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="docs_api_sample.cpp" />
+    <ClCompile Include="docs_api_sampleDlg.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="test.cpp" />
-    <ClCompile Include="testDlg.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="test.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <ResourceCompile Include="docs_api_sample.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="test.rc" />
+      <UserProperties RESOURCE_FILE="docs_api_sample.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

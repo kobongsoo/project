@@ -43,10 +43,6 @@
 				},
 				"dynamic":"strict",
 				"properties": {
-					"user_id": {
-						"type": "keyword",
-						"store": true
-					},
 					"rfile_name": {
 						"type": "keyword",
 						"store": true
@@ -56,7 +52,43 @@
 						"store": false,
 						"analyzer": "mpower10u_korean_analyzer"
 					},
+					"vector0": {
+        					"type": "dense_vector",
+        					"dims": 128
+      					},
 					"vector1": {
+        					"type": "dense_vector",
+        					"dims": 128
+      					},
+					"vector2": {
+        					"type": "dense_vector",
+        					"dims": 128
+      					},
+					"vector3": {
+        					"type": "dense_vector",
+        					"dims": 128
+      					},
+					"vector4": {
+        					"type": "dense_vector",
+        					"dims": 128
+      					},
+					"vector5": {
+        					"type": "dense_vector",
+        					"dims": 128
+      					},
+					"vector6": {
+        					"type": "dense_vector",
+        					"dims": 128
+      					},
+					"vector7": {
+        					"type": "dense_vector",
+        					"dims": 128
+      					},
+					"vector8": {
+        					"type": "dense_vector",
+        					"dims": 128
+      					},
+					"vector9": {
         					"type": "dense_vector",
         					"dims": 128
       					}

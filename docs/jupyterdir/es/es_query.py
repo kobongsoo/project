@@ -4,6 +4,20 @@ import os
 import numpy as np
 
 ############################################################
+## rfile_name으로 해당 인덱스 정보 얻는 쿼리 스크립트 
+############################################################
+def make_rfile_name_query_script(query:str)->str:
+    
+    # rfile_name으로 검색
+    script_query={
+        "term": {
+            "rfile_name": query
+        }
+    }
+
+    return script_query
+
+############################################################
 ## bm25 쿼리 스크립트 만들기
 ############################################################
 def make_bm25_query_script(query:str, user_id:str=None)->str:

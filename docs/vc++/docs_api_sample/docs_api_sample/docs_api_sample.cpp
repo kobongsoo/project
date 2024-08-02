@@ -1,26 +1,26 @@
 
-// test.cpp : 응용 프로그램에 대한 클래스 동작을 정의합니다.
+// docs_api_sample.cpp : 응용 프로그램에 대한 클래스 동작을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "test.h"
-#include "testDlg.h"
+#include "docs_api_sample.h"
+#include "docs_api_sampleDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 
-// CtestApp
+// Cdocs_api_sampleApp
 
-BEGIN_MESSAGE_MAP(CtestApp, CWinApp)
+BEGIN_MESSAGE_MAP(Cdocs_api_sampleApp, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
 
-// CtestApp 생성
+// Cdocs_api_sampleApp 생성
 
-CtestApp::CtestApp()
+Cdocs_api_sampleApp::Cdocs_api_sampleApp()
 {
 	// 다시 시작 관리자 지원
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
@@ -30,14 +30,14 @@ CtestApp::CtestApp()
 }
 
 
-// 유일한 CtestApp 개체입니다.
+// 유일한 Cdocs_api_sampleApp 개체입니다.
 
-CtestApp theApp;
+Cdocs_api_sampleApp theApp;
 
 
-// CtestApp 초기화
+// Cdocs_api_sampleApp 초기화
 
-BOOL CtestApp::InitInstance()
+BOOL Cdocs_api_sampleApp::InitInstance()
 {
 	// 응용 프로그램 매니페스트가 ComCtl32.dll 버전 6 이상을 사용하여 비주얼 스타일을
 	// 사용하도록 지정하는 경우, Windows XP 상에서 반드시 InitCommonControlsEx()가 필요합니다.
@@ -67,7 +67,7 @@ BOOL CtestApp::InitInstance()
 	// 적절한 내용으로 수정해야 합니다.
 	SetRegistryKey(_T("로컬 응용 프로그램 마법사에서 생성된 응용 프로그램"));
 
-	CtestDlg dlg;
+	Cdocs_api_sampleDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

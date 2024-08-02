@@ -16,18 +16,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="res\test.rc2">
+    <None Include="res\docs_api_sample.rc2">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="res\test.ico">
+    <None Include="res\docs_api_sample.ico">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="test.h">
+    <ClInclude Include="docs_api_sample.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="testDlg.h">
+    <ClInclude Include="docs_api_sampleDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -42,12 +42,18 @@
     <ClInclude Include="Util.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test.cpp">
+    <ClCompile Include="docs_api_sample.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="testDlg.cpp">
+    <ClCompile Include="docs_api_sampleDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
@@ -56,9 +62,12 @@
     <ClCompile Include="Util.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="test.rc">
+    <ResourceCompile Include="docs_api_sample.rc">
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>

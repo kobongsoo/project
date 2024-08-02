@@ -16,7 +16,6 @@ def search_docs01(instance:dict, file_path:str):
     myutils = instance['myutils']
     myes = instance['myes']
     embedding = instance['embedding']
-    model_shape = instance['model_shape']
         
     start_time = time.time()
     upload_file_type = 1
