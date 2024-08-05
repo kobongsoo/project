@@ -1,9 +1,0 @@
-# 환경 관련
-LOG_PATH: './log/docs'  # 로그경로
-SEED: 111               # **seed 값 (**변경하면, 기존 임베딩벡터값과 다른 값이 나옴)
-
-ES_URL: "https://192.168.0.130:9201"
-ES_INDEX_NAME: "docs_kpf-sbert-128d-10-1-keword"
-ES_INDEX_FILE_PATH: "../data/es_index/mpower10u_128d_10_1.json"
-ES_BATCH_SIZE: 100
-ES_API_KEY: "ZllhM0VaRUJVZllIUFJNNC1zU1E6ZlZhMFppT2dTakNsb0oxMUU4MTRpZw==" # elasticsearch 8.x.x 버전일때 api_key를 설정해 주어야 함.
