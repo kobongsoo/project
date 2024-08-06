@@ -60,7 +60,6 @@ def embed_search_docs01(instance:dict, rfile_name:str):
             for i in range(1, 10):
                 vector = hit["_source"][f"vector{i}"]
                 emb_list.append(vector)  
-                break
             break
                         
         # 쿼리를 만듬.
