@@ -9,7 +9,100 @@ from utils import weighted_reciprocal_rank_fusion, clustering_embedding
 from es import make_max_query_script, make_max_query_vectors_script, make_max_query_vectors_and_avg_script, make_embedding_query_script
 
 #---------------------------------------------------------------
+# == 이미 임베딩된 벡터로 검색 하는 함수 ==
+# => rfile_name을 입력하면 인덱스에서 검색해서 저장된 벡터를 불러와서, 벡터를 가지고 유사한 문서 검색함.
+# in: instance
+# in: rfile_name : 검색할 rfile_name(문서명(식별자))
+#---------------------------------------------------------------
+def embed_search_docs01(instance:dict, rfile_name:str):
+    assert rfile_name, f'rfile_name is empty'
+    
+    start_time = time.time()
+    
+    myutils = instance['myutils']
+    myes = instance['myes']
+    embedding = instance['embedding']
+     
+    settings = myutils.get_options()
+    SEARCH_EMBED_TYPE = settings['SEARCH_EMBED_TYPE'] # 임베딩 검색 방식 : 0=다대다: 클러스터링 임베딩 검색(mean), 1=일대일:평균 임베딩 검색, 2=1:일대다:평균 임베딩 검색
+    NUM_CLUSTERS = settings['NUM_CLUSTERS']        # 클러스터링 계수
+    SEARCH_K = settings['SEARCH_K'] + 1       # 검색 계수 +1 해줌(*자신도 검색되므로,1=2로 검색해야 함)
+    embedding_search_min_score = settings['EMBEDDING_SEARCH_MIN_SCORE']
+     
+    # ==== rfle_name으로 검색===============    
+    # => term으로 해서 rfile_name 풀경로가 모두 일치하는 경우만 검색함.
+    body = {
+        "size": 1,
+        "query": {"term": {"rfile_name": rfile_name}},
+        "_source": {"includes": ["rfile_name", "vector0", "vector1", "vector2", "vector3", "vector4", "vector5", "vector6", "vector7", "vector8", "vector9"]}
+    }
+    
+    response = None
+    response = myes.search(body=body)    
+    #print(f"*embed_search_doc01: response:{response}")
+    
+    # 검색된값이 없으면 리턴
+    hits = response["hits"]["hits"]
+    if len(hits) < 1:
+        end_time = time.time()
+        elapsed_time = "{:.2f}".format(end_time - start_time)
+        response = {"error": 2, "response": f"{hits}", "time": f"{elapsed_time}"}
+        return response 
+        
+    emb_list:list = []
+    docid:str="" # id 정의
+    uids = []   
+    
+    # ==== 검색방식에 따라 쿼리 스크립트 생성 ===============
+    if SEARCH_EMBED_TYPE == 0: # 다대다 쿼리(*쿼리 문서를 클러스터링해서 여러개 벡터 만들고 임베딩된문서의 다수 벡터와 비교)
+        for hit in hits: 
+            docid = hit["_id"]   # 문서id
+            for i in range(1, 10):
+                vector = hit["_source"][f"vector{i}"]
+                emb_list.append(vector)  
+                break
+            break
+                        
+        # 쿼리를 만듬.
+        script_query = make_max_query_vectors_script(query_vectors=emb_list, vectornum=NUM_CLUSTERS, uid_list=uids) 
+    else:
+        for hit in hits: 
+            docid = hit["_id"]   # 문서id
+            vector = hit["_source"][f"vector0"]
+            emb_list.append(vector)  
+            break
+             
+        if SEARCH_EMBED_TYPE == 1: # 평균 쿼리 만듬.(*쿼리 문서의 평균을 구해서 임베딩된문서의 평균벡터와 비교)
+            script_query = make_embedding_query_script(qr_vector=emb_list[0]) # 쿼리를 만듬.  
+        else: # 1대다 쿼리 만듬.(*쿼리 문서의 평균을 구해서 임베딩된문서의 다수 벡터와 비교)
+            script_query = make_max_query_script(query_vector=emb_list[0], vectornum=NUM_CLUSTERS, uid_list=[]) # 쿼리를 만듬.   
+
+    print(f"*embed_search_doc01: docid:{docid}")
+    print(f"*embed_search_doc01: script_query:{script_query}")
+    
+    # ==== ES로 쿼리 ===============
+    # 임베딩 search
+    embed_docs = myes.search_docs(script_query=script_query, k=SEARCH_K, min_score=embedding_search_min_score) 
+    
+    docs:list = []
+    for embed_doc in embed_docs:
+        doc={}
+        search_docid = embed_doc['id']
+        if docid != search_docid:         #**검색할 문서id와 같은경우는 pass, 다른경우에만 저장
+            doc['rfile_name'] = embed_doc["rfile_name"]       
+            doc['id'] = embed_doc["id"]   # 문서id
+            doc['score'] = embed_doc["score"]
+            docs.append(doc)
+
+    end_time = time.time()
+    elapsed_time = "{:.2f}".format(end_time - start_time)
+    response = {"error": 0, "response": f"{docs}", "time": f"{elapsed_time}"}
+    
+    return response 
+    
+#---------------------------------------------------------------
 # == 검색 처리 함수 ==
+#---------------------------------------------------------------
 def search_docs01(instance:dict, file_path:str):
     assert file_path, f'file_path is empty'
         
@@ -28,7 +121,7 @@ def search_docs01(instance:dict, file_path:str):
     index_name = settings['ES_INDEX_NAME']
     es_batch_size = settings['ES_BATCH_SIZE']
     NUM_CLUSTERS = settings['NUM_CLUSTERS']        # 클러스터링 계수
-    SEARCH_EMBED_TYPE = settings['SEARCH_EMBED_TYPE'] # 임베딩 검색 방식 : 0=클러스터링 임베딩 검색(MAX), 1=평균 임베딩 검색
+    SEARCH_EMBED_TYPE = settings['SEARCH_EMBED_TYPE'] # 임베딩 검색 방식 : 0=다대다: 클러스터링 임베딩 검색(mean), 1=일대일:평균 임베딩 검색, 2=1:일대다:평균 임베딩 검색
     FLOAT_TYPE = settings['FLOAT_TYPE']    # 클러스터링 할때 벡터 타입(float32, float16)
     OUTMODE = settings['OUTMODE']          # 클러스터링 할때 타입: mean=평균, max=최대값
     SEARCH_K = settings['SEARCH_K']        # 검색 계수

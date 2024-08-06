@@ -23,7 +23,7 @@ from langchain_community.embeddings import (
 )
 
 from vision import MY_Vision
-from docs_func import check_mime_type, getfilePath_doc01, extract_save_doc01, search_docs01, embedding_file_doc01, embedding_folder_doc01
+from docs_func import check_mime_type, getfilePath_doc01, extract_save_doc01, search_docs01, embedding_file_doc01, embedding_folder_doc01, embed_search_docs01
 
 #-----------------------------------------------
 # Mpower Synap 추가
@@ -79,6 +79,7 @@ global_instance:dict = {'myutils': myutils, 'settings': settings, 'myvision': my
 @app.get("/")  # 경로 동작 데코레이터 작성
 async def root(): # 경로 동작 함수 작성
 	return {"msg": "Document classification"}
+
 #---------------------------------------------------------------
 # ==rfile_name으로 인덱스 정보 얻기==
 # => in:rfile_name = 검색할 rfile_name(*keywaord 타입이어야함)
@@ -118,6 +119,21 @@ async def search01(request:Request, file_path:str):
     assert file_path, f'file_path is empty'
     myutils.log_message(f'[/search01] file_path:{file_path}')
     return JSONResponse(content=search_docs01(instance=global_instance, file_path=file_path))        
+#---------------------------------------------------------------
+# ==서버 임베딩된 문서 벡터로 검색==
+# => in:rfile_name = 검색할 rfile_name(*keywaord 타입이어야함)
+#---------------------------------------------------------------
+@app.get("/embed_search01")
+async def embed_search01(request:Request, rfile_name:str):
+    assert rfile_name, f'rfile_name is empty!'
+    start_time = time.time()
+        
+    response = embed_search_docs01(instance=global_instance, rfile_name=rfile_name)
+    
+    elapsed_time = "{:.2f}".format(time.time() - start_time)
+    
+    response = {"response": f"{response}", "time": f"{elapsed_time}"}
+    return JSONResponse(content=response) 
 #---------------------------------------------------------------
 # == 폴더에 있는 모든 파일 임베딩 값을 구함 ==
 # => 해당 폴더에 있는 모든 파일을 임베딩함. 해당 파일들은 이미 text 추출 되어 있어야 함.

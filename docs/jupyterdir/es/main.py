@@ -124,7 +124,16 @@ class My_ElasticSearch:
             msg = f'delete_insert_doc:=>{e}'
             print(f'*[RAG_delete_insert_doc] Exception:{msg}\n')
             return msg, error
-            
+   
+    ############################################################
+    ## 검색
+    ############################################################
+    def search(self, body):
+        assert body, f"body is empty"
+        #print(f'*[search] body:{body}\n')
+        res = self.es.search(index=self.index_name, body=body)
+        return res
+    
     ############################################################
     ## 인덱스 내의 데이터 업데이트=>_id 에 데이터 업데이트
     ############################################################
@@ -299,7 +308,8 @@ class My_ElasticSearch:
             
             # score가 min_score이상인 경우에만 추가 
             if score > min_score: 
-                doc['rfile_name'] = hit["_source"]["rfile_name"]      # contextid 담음
+                doc['rfile_name'] = hit["_source"]["rfile_name"]       # contextid 담음
+                doc['id'] = hit["_id"]   # 문서id
                 #doc['rfile_text'] = hit["_source"]["rfile_text"]      # text 담음.
                 doc['score'] = score
                 #print(f'*[search_docs] doc:{doc}\n')
