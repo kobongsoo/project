@@ -85,7 +85,7 @@ async def root(): # 경로 동작 함수 작성
 # => in:rfile_name = 검색할 rfile_name(*keywaord 타입이어야함)
 #---------------------------------------------------------------
 @app.get("/rfile_name01")
-async def list01(request:Request, rfile_name:str):
+async def rfile_name01(request:Request, rfile_name:str):
     assert rfile_name, f'rfile_name is empty!'
     start_time = time.time()
         
@@ -137,14 +137,13 @@ async def embed_search01(request:Request, rfile_name:str):
 #---------------------------------------------------------------
 # == 폴더에 있는 모든 파일 임베딩 값을 구함 ==
 # => 해당 폴더에 있는 모든 파일을 임베딩함. 해당 파일들은 이미 text 추출 되어 있어야 함.
-# => in:user_id = 사용자 id (*여기서는 사용 안됨)
 # => in:file_folder = 임베딩할 text 추출된 파일들이 있는 경로.
 # => in:del_index = True이면 기존 index명과 동일한 인덱스가 ES에 있으면 제거하고 다시 임베딩함., False면 기존거 유지해서 추가 임베딩 함.
 #---------------------------------------------------------------
 @app.get("/embed01")
-async def embed01(request:Request, user_id:str, file_folder:str='../../data11/docs', del_index:bool=False):
-    assert user_id, f'user_id is empty'
-    myutils.log_message(f'\n[info][embed01] user_id:{user_id}, del_index:{del_index}\n')
+async def embed01(request:Request, file_folder:str='../../data11/docs', del_index:bool=False):
+    assert file_folder, f'file_folder is empty'
+    myutils.log_message(f'\n[info][embed01] file_folder:{file_folder}, del_index:{del_index}\n')
  
     return JSONResponse(content=embedding_folder_doc01(global_instance, file_folder, del_index))
 #---------------------------------------------------------------

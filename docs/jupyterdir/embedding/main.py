@@ -21,8 +21,8 @@ def embedding_pdf(huggingfaceembeddings,     # HuggingFaceEmbedding 임베딩 �
                   file_path:str,             # 임베딩할 파일 경로
                   chunk_size:int=500,        # chunk 사이즈
                   chunk_overlap:int=0,       # chunk 오버랩
-                  upload_file_type:int=0     # 업로드할 파일 타입(0=pdf 파일, 1=모든파일)
-                 ):
+                  upload_file_type:int=0,    # 업로드할 파일 타입(0=pdf 파일, 1=모든파일)
+                  no_embedding:int=0):       # 1=임베딩 하지 않고 doc을 split만 해서 리턴.
 
     assert huggingfaceembeddings, f"[embedding_pdf] huggingfaceembeddings is empty!"
     assert file_path, f"[embedding_pdf] file_path is empty!"
@@ -63,12 +63,16 @@ def embedding_pdf(huggingfaceembeddings,     # HuggingFaceEmbedding 임베딩 �
         if len(page_content) > 10:
             docs.append(page_content)
 
-    # *임베딩 모델 설정 
-    # => 여기서 다시 임베딩 모델 호출하면 오래걸림. 따라서 메인에서 1번만 로딩하고, 메인에서 로딩한 모델 인스턴스 재사용함. 
-    embedding = huggingfaceembeddings
-    #print(f'*[embedding_pdf] 임베딩 모델: {embedding.model_name}')
+    # 임베딩하는 경우에만 임베딩하고 벡터 구함        
+    docs_vectors:list = []
+    if no_embedding == 0:
+        # *임베딩 모델 설정 
+        # => 여기서 다시 임베딩 모델 호출하면 오래걸림. 따라서 메인에서 1번만 로딩하고, 메인에서 로딩한 모델 인스턴스 재사용함. 
+        embedding = huggingfaceembeddings
+        #print(f'*[embedding_pdf] 임베딩 모델: {embedding.model_name}')
 
-    # 임베딩 실행
-    docs_vectors = embedding.embed_documents(docs)
+
+        # 임베딩 실행
+        docs_vectors = embedding.embed_documents(docs)
     return docs_vectors, docs
     
