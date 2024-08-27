@@ -230,8 +230,9 @@ def search_docs01(instance:dict, file_path:str):
         if len(query) > 1024:
             query = query[:1024]
             myutils.log_message(f'\n[search_docs01] BM25_searchdoc=>query:\n{query}\n')
-
-        bm25_docs = myes.BM25_search_docs(query=query, k=SEARCH_K, min_score=bm25_search_min_score)
+            
+        if len(query) > 0:
+            bm25_docs = myes.BM25_search_docs(query=query, k=SEARCH_K, min_score=bm25_search_min_score)
     # ==============================
     
     # ==BM25 검색(2)인 경우 bm25결과만 리턴.==
