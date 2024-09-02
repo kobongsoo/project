@@ -21,6 +21,7 @@ def embedding_file_doc01(instance:dict, file_path:str):
     embedding = instance['embedding']
     
     settings = myutils.get_options()
+    es_major_ver = settings['ES_MAJOR_VER']
     chunk_size = settings['CHUNK_SIZE']
     chunk_overlap = settings['CHUNK_OVERLAP']
     index_name = settings['ES_INDEX_NAME']
@@ -79,6 +80,10 @@ def embedding_file_doc01(instance:dict, file_path:str):
         for i in range(NUM_CLUSTERS+1):
             esdoc["vector"+str(i)] = np.zeros((dim_size))
             
+            # elasticsearch 8.x 버전에서는 dense_vector zero값을 넣으면 에러나므로, 2번째 배열값에 0.01을 넣음
+            esdoc["vector"+str(i)][1] = 0.01
+            #esdoc["vector"+str(i)] = np.ones((dim_size))  
+            
         # vector0에는 평균 임베딩 값을 담음.
         avg_emb = docs_vectors_array.mean(axis=0).reshape(1,-1) #(128,) 배열을 (1,128) 형태로 만들기 위해 reshape 해줌
         esdoc["vector0"] = avg_emb[0]
@@ -86,9 +91,11 @@ def embedding_file_doc01(instance:dict, file_path:str):
         # vector 1~xx 까지 vector 값들을 담음.
         for i, dense_vector in enumerate(emb):
             esdoc["vector"+str(i+1)] = dense_vector
-            
-        esdoc['_op_type'] = "index"
-        esdoc['_index'] = index_name
+ 
+        # elasticsearch 7인경우에만 아래 값 추가 
+        if es_major_ver == "7":
+            esdoc['_op_type'] = "index"
+            esdoc['_index'] = index_name
        
         return 0, esdoc 
         
@@ -109,7 +116,15 @@ def embedding_folder_doc01(instance:dict, file_folder:str, del_index:bool=False)
         
     settings = myutils.get_options()
     es_batch_size = settings['ES_BATCH_SIZE']
-    
+    index_name = settings['ES_INDEX_NAME']
+    es_major_ver = settings['ES_MAJOR_VER']
+  
+    # elasticsearch 8.x 버전인 경우 index_doc 값 설정
+    # 예)  {"index": {"_index": "my_index"}},
+    index_doc = {}
+    if es_major_ver == "8":
+        index_doc['index'] = {"_index": index_name}
+            
     # True이면 삭제후 재 생성함
     if del_index == True:
         myes.delete_index()
@@ -130,6 +145,9 @@ def embedding_folder_doc01(instance:dict, file_folder:str, del_index:bool=False)
                 if error == 0:
                     count += 1
                     if len(doc) > 0:
+                        # elasticsearch 8.x 버전인 경우 index_doc 값 추가
+                        if es_major_ver == "8":
+                            esdocs.append(index_doc)
                         esdocs.append(doc)
                  
                 # batch_size 만큼씩 한꺼번에 es로 insert 시킴.

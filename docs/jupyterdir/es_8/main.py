@@ -74,7 +74,9 @@ class My_ElasticSearch:
 
     # 한꺼번에 
     def RAG_bulk(self, docs:list):
+        #print(f'*[RAG_bulk]\n{docs}')
         res = self.es.bulk(body=docs)
+        #print(f'*[RAG_bulk]res\n{res}')
         return res
         
     def RAG_delete_insert_doc(self, doc:dict, doc_type:str="_doc"):

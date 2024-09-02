@@ -62,6 +62,7 @@ def make_embedding_query_script(qr_vector, user_id:str=None, uid_list:list=None)
             "query":query,
             "script":{
                 "source": "cosineSimilarity(params.qrVector, 'vector0') + 1.0",  # 뒤에 1.0 은 코사인유사도 측정된 값 + 1.0을 더해준 출력이 나옴
+                #"source": "dotProduct(params.qrVector, 'vector0')",
                 "params": {"qrVector": qr_vector}
             }
         }
