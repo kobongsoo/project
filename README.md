@@ -1,3 +1,23 @@
+## 참고_01
+### ElasticSearch 8.x API KEY 생성 방법
+
+1) kibana 접속 : localhost:5601
+2) 메뉴에서 Search>elasticsearch 클릭
+3) 화면중간에 API KEY 생성 클릭 
+4) 이후 Name 입력하고, [Create API Key] 입력 (**Contol security privileges enable** 시켜야 되는 경우도 있음)
+   api_key 인자로 **encoded** 값을 입력해야 함.
+```
+{
+  "id": "lWqAlpEBTQ4NLHSQA07H",
+  "name": "eskey",
+  "api_key": "3ShXXXXXXXXXX",
+  "encoded": "bFdxQXXXXXXXXXXXXXXXXXXXXXXXXXX==",
+  "beats_logstash_format": "lWqXXXXXXXXXXXXXXXXXXXXX"
+}
+```
+![image](https://github.com/user-attachments/assets/76b2e071-0d16-4077-b034-409217fca6b8)
+
+
 ## 3번째 프로젝트 - docs 프로젝트
 [source] **docs 폴더**
 - 문서임베딩 하고 문서 검색 하는 프로젝트.
